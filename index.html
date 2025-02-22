@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pagos</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+    input[readonly] {
+        background-color: #f0f0f0;
+    }
+    button {
+        margin-top: 20px;
+        padding: 10px;
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    </style>
+</head>
+<body>
+    <h1>Registro de Pagos</h1>
+    <form id="paymentForm">
+        <label for="fecha">Fecha y Hora:</label>
+        <input type="text" id="fecha" name="fecha" readonly>
+
+        <label for="coordenadas">Coordenadas:</label>
+        <input type="text" id="coordenadas" name="coordenadas" readonly>
+
+        <label for="concepto">Concepto de Gasto:</label>
+        <input type="text" id="concepto" name="concepto" placeholder="Opcional">
+
+        <label for="categoria">Categoría:</label>
+<select id="categoria" name="categoria" required>
+    <option value="">Seleccione una categoría</option>
+
+    <!-- *Gastos Fijos (Esenciales)* -->
+    <option value="Renta o Hipoteca">Renta o Hipoteca</option>
+    <option value="Servicios del hogar">Servicios del hogar (Luz, agua, gas, internet, teléfono, TV de paga)</option>
+    <option value="Alimentación">Alimentación (Supermercado, despensa, comidas fuera)</option>
+    <option value="Transporte">Transporte (Gasolina, Uber, transporte público, mantenimiento del carro, seguro del auto)</option>
+    <option value="Seguro médico y de vida">Seguro médico y de vida</option>
+    <option value="Colegiaturas o educación">Colegiaturas o educación (Escuela, universidad, cursos, libros, útiles escolares)</option>
+    <option value="Cuotas o membresías">Cuotas o membresías (Gimnasio, clubs, asociaciones)</option>
+
+    <!-- *Gastos Variables (Ocasionales pero importantes)* -->
+    <option value="Ropa y calzado">Ropa y calzado</option>
+    <option value="Salidas y entretenimiento">Salidas y entretenimiento (Cines, bares, restaurantes, conciertos, eventos deportivos)</option>
+    <option value="Suscripciones">Suscripciones (Netflix, Spotify, Amazon Prime, YouTube Premium, Apple Music)</option>
+    <option value="Salud y bienestar">Salud y bienestar (Médico, dentista, oftalmólogo, medicamentos, terapia)</option>
+    <option value="Cuidado personal">Cuidado personal (Corte de cabello, maquillaje, manicura, barbería, productos de belleza)</option>
+    <option value="Mantenimiento del hogar">Mantenimiento del hogar (Reparaciones, limpieza, muebles, decoración)</option>
+
+    <!-- *Deudas y Obligaciones* -->
+    <option value="Mensualidad del carro o financiamiento">Mensualidad del carro o financiamiento</option>
+    <option value="Tarjetas de crédito">Tarjetas de crédito</option>
+    <option value="Préstamos personales o hipotecarios">Préstamos personales o hipotecarios</option>
+    <option value="Aportaciones a ahorro o inversión">Aportaciones a ahorro o inversión (AFORE, CETES, bolsa, criptos, fondo de emergencia)</option>
+    <option value="Impuestos y trámites legales">Impuestos y trámites legales</option>
+
+    <!-- *Gastos Extra (No recurrentes)* -->
+    <option value="Regalos y celebraciones">Regalos y celebraciones (Cumpleaños, bodas, aniversarios, Navidad)</option>
+    <option value="Vacaciones o viajes">Vacaciones o viajes (Boletos de avión, hospedaje, comidas fuera, excursiones)</option>
+    <option value="Mascotas">Mascotas (Comida, veterinario, vacunas, accesorios)</option>
+    <option value="Electrónica y tecnología">Electrónica y tecnología (Celulares, gadgets, reparación de computadoras)</option>
+    <option value="Hobbies y deportes">Hobbies y deportes (Equipamiento, inscripciones, clases, torneos)</option>
+</select>
+
+        <label for="formaPago">Forma de Pago:</label>
+        <select id="formaPago" name="formaPago" required>
+            <option value="">Seleccione una forma de pago</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta Credito 1600">Tarjeta Crédito 1600</option>
+            <option value="Tarjeta Credito 4310">Tarjeta Crédito 4310</option>
+            <option value="Tarjeta Credito 5310">Tarjeta Crédito 5310</option>
+            <!-- Puedes agregar más opciones aquí -->
+        </select>
+
+        <label for="monto">Monto:</label>
+        <input type="number" id="monto" name="monto" required step="0.01" placeholder="Ingrese el monto">
+
+        <button type="submit">Registrar Pago</button>
+    </form>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fecha y hora automáticas
+            const fechaInput = document.getElementById('fecha');
+            const now = new Date();
+            fechaInput.value = now.toLocaleString('es-ES');
+
+            // Coordenadas automáticas
+            const coordsInput = document.getElementById('coordenadas');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        coordsInput.value = `Lat: ${latitude}, ${longitude}`;
+                    },
+                    function(error) {
+                        console.error('Error al obtener ubicación:', error);
+                        coordsInput.value = 'Ubicación no disponible';
+                        alert('No se pudo obtener la ubicación. Habilite la geolocalización.');
+                    }
+                );
+            } else {
+                coordsInput.value = 'Geolocalización no soportada';
+                alert('El navegador no soporta geolocalización.');
+            }
+
+            // Manejo del formulario
+            document.getElementById('paymentForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Capturar los valores del formulario
+                const fecha = document.getElementById('fecha').value;
+                const coordenadas = document.getElementById('coordenadas').value;
+                const concepto = document.getElementById('concepto').value || 'No especificado';
+                const categoria = document.getElementById('categoria').value;
+                const formaPago = document.getElementById('formaPago').value;
+                const monto = document.getElementById('monto').value;
+
+                // Construir el mensaje
+                const mensaje = `Resumen de Pago:\n` +
+                                `Fecha y Hora: ${fecha}\n` +
+                                `Coordenadas: ${coordenadas}\n` +
+                                `Concepto: ${concepto}\n` +
+                                `Categoría: ${categoria}\n` +
+                                `Forma de Pago: ${formaPago}\n` +
+                                `Monto: $${monto}`;
+
+                // Número de WhatsApp en formato internacional
+                const numeroWhatsApp = '528115001658';  // +52 para México
+
+                // Generar el enlace de WhatsApp
+                const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+
+                // Redirigir al usuario a WhatsApp
+                window.location.href = urlWhatsApp;
+            });
+        });
+    </script>
+
+</body>
+</html>
